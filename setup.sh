@@ -1,0 +1,49 @@
+#!/bin/bash
+. /opt/farm/scripts/init
+. /opt/farm/scripts/functions.custom
+. /opt/farm/scripts/functions.install
+
+
+base=/opt/sf-monitoring-snmpd/templates/$OSVER
+
+if [ ! -f $base/snmpd.tpl ]; then
+	echo "skipping snmpd configuration (no template available for $OSVER)"
+	exit 1
+fi
+
+oldcfg="/var/lib/snmp.community"
+newcfg="/etc/local/.config/snmp.community"
+
+if [ -f $oldcfg ] && [ ! -f $newcfg ]; then
+	mv $oldcfg $newcfg
+fi
+
+if [ ! -f $newcfg ]; then
+	echo -n "enter snmp v2 community or hit enter to disable snmpd monitoring: "
+	stty -echo
+	read community
+	stty echo
+	echo ""  # force a carriage return to be output
+	echo -n "$community" >$newcfg
+	chmod 0600 $newcfg
+fi
+
+if [ ! -s $newcfg ]; then
+	echo "skipping snmpd configuration (no community configured)"
+	exit 0
+fi
+
+bash /opt/farm/scripts/setup/role.sh snmpd
+
+echo "setting up snmpd configuration"
+file="/etc/snmp/snmpd.conf"
+save_original_config $file
+
+community="`cat $newcfg`"
+cat $base/snmpd.tpl |sed -e "s/%%community%%/$community/g" -e "s/%%domain%%/`external_domain`/g" -e "s/%%management%%/`management_public_ip_range`/g" >$file
+
+if [ -f $base/snmpd.default ]; then
+	install_link $base/snmpd.default /etc/default/snmpd
+fi
+
+service snmpd restart
