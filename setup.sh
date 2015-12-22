@@ -19,12 +19,14 @@ if [ -f $oldcfg ] && [ ! -f $newcfg ]; then
 fi
 
 if [ ! -f $newcfg ]; then
-	echo -n "enter snmp v2 community or hit enter to disable snmpd monitoring: "
-	stty -echo
-	read community
-	stty echo
-	echo ""  # force a carriage return to be output
-	echo -n "$community" >$newcfg
+	if [ "$SNMP_COMMUNITY" = "" ]; then
+		echo -n "enter snmp v2 community or hit enter to disable snmpd monitoring: "
+		stty -echo
+		read SNMP_COMMUNITY
+		stty echo
+		echo ""  # force a carriage return to be output
+	fi
+	echo -n "$SNMP_COMMUNITY" >$newcfg
 	chmod 0600 $newcfg
 fi
 
