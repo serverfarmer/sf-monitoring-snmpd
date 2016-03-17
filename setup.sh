@@ -4,7 +4,7 @@
 . /opt/farm/scripts/functions.install
 
 
-base=/opt/sf-monitoring-snmpd/templates/$OSVER
+base=/opt/farm/ext/monitoring-snmpd/templates/$OSVER
 
 if [ ! -f $base/snmpd.tpl ]; then
 	echo "skipping snmpd configuration (no template available for $OSVER)"
@@ -35,7 +35,7 @@ if [ ! -s $newcfg ]; then
 	exit 0
 fi
 
-bash /opt/farm/scripts/setup/role.sh snmpd
+/opt/farm/scripts/setup/role.sh snmpd
 
 echo "setting up snmpd configuration"
 file="/etc/snmp/snmpd.conf"
