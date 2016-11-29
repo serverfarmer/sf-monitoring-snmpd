@@ -60,6 +60,7 @@ view   systemonly  included   .1.3.6.1.2.1.25.1
 #rocommunity secret  10.0.0.0/16
 
 rocommunity %%community%% 10.0.0.0/8
+rocommunity %%community%% 172.16.0.0/12
 rocommunity %%community%% 192.168.0.0/16
 rocommunity %%community%% %%management%%
 
