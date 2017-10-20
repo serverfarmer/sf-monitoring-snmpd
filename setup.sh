@@ -35,7 +35,7 @@ if [ ! -s $newcfg ]; then
 	exit 0
 fi
 
-/opt/farm/scripts/setup/role.sh snmpd
+/opt/farm/ext/repos/install.sh snmpd
 
 echo "setting up snmpd configuration"
 file="/etc/snmp/snmpd.conf"
@@ -49,3 +49,4 @@ if [ -f $base/snmpd.default ]; then
 fi
 
 service snmpd restart
+echo
