@@ -45,7 +45,8 @@ community="`cat $newcfg`"
 cat $base/snmpd.tpl |sed -e "s/%%community%%/$community/g" -e "s/%%domain%%/`external_domain`/g" -e "s/%%management%%/`management_public_ip_range`/g" >$file
 
 if [ -f $base/snmpd.default ]; then
-	install_link $base/snmpd.default /etc/default/snmpd
+	remove_link /etc/default/snmpd
+	install_copy $base/snmpd.default /etc/default/snmpd
 fi
 
 service snmpd restart
