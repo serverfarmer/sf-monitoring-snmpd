@@ -11,14 +11,9 @@ if [ ! -f $base/snmpd.tpl ]; then
 	exit 1
 fi
 
-oldcfg="/var/lib/snmp.community"
-newcfg="/etc/local/.config/snmp.community"
+cfg="/etc/local/.config/snmp.community"
 
-if [ -f $oldcfg ] && [ ! -f $newcfg ]; then
-	mv $oldcfg $newcfg
-fi
-
-if [ ! -f $newcfg ]; then
+if [ ! -f $cfg ]; then
 	if [ "$SNMP_COMMUNITY" = "" ]; then
 		echo -n "enter snmp v2 community or hit enter to disable snmpd monitoring: "
 		stty -echo
@@ -26,11 +21,11 @@ if [ ! -f $newcfg ]; then
 		stty echo
 		echo ""  # force a carriage return to be output
 	fi
-	echo -n "$SNMP_COMMUNITY" >$newcfg
-	chmod 0600 $newcfg
+	echo -n "$SNMP_COMMUNITY" >$cfg
+	chmod 0600 $cfg
 fi
 
-if [ ! -s $newcfg ]; then
+if [ ! -s $cfg ]; then
 	echo "skipping snmpd configuration (no community configured)"
 	exit 0
 fi
@@ -41,7 +36,7 @@ echo "setting up snmpd configuration"
 file="/etc/snmp/snmpd.conf"
 save_original_config $file
 
-community="`cat $newcfg`"
+community="`cat $cfg`"
 cat $base/snmpd.tpl |sed -e "s/%%community%%/$community/g" -e "s/%%domain%%/`external_domain`/g" -e "s/%%management%%/`management_public_ip_range`/g" >$file
 
 if [ -f $base/snmpd.default ]; then
