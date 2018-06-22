@@ -30,7 +30,7 @@ if [ ! -s $cfg ]; then
 	exit 0
 fi
 
-/opt/farm/ext/repos/install.sh snmpd
+/opt/farm/ext/farm-roles/install.sh snmpd
 
 echo "setting up snmpd configuration"
 file="/etc/snmp/snmpd.conf"
