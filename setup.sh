@@ -37,7 +37,7 @@ file="/etc/snmp/snmpd.conf"
 save_original_config $file
 
 community="`cat $cfg`"
-cat $base/snmpd.tpl |sed -e "s/%%community%%/$community/g" -e "s/%%domain%%/`external_domain`/g" -e "s/%%management%%/`management_public_ip_range`/g" >$file
+cat $base/snmpd.tpl |sed -e "s#%%community%%#$community#g" -e "s#%%domain%%#`external_domain`#g" -e "s#%%management%%#`management_public_ip_range`#g" >$file
 
 if [ -f $base/snmpd.default ]; then
 	remove_link /etc/default/snmpd
