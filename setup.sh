@@ -34,6 +34,7 @@ fi
 
 echo "setting up snmpd configuration"
 config="/etc/snmp/snmpd.conf"
+oldmd5=`md5sum $config`
 save_original_config $config
 
 if [ -s $file.range ]; then
@@ -44,11 +45,14 @@ fi
 
 community="`cat $file.community`"
 cat $base/snmpd.tpl |sed -e "s#%%community%%#$community#g" -e "s#%%domain%%#`external_domain`#g" -e "s#%%management%%#$range#g" >$config
+newmd5=`md5sum $config`
 
 if [ -f $base/snmpd.default ]; then
 	remove_link /etc/default/snmpd
 	install_copy $base/snmpd.default /etc/default/snmpd
 fi
 
-service snmpd restart
-echo
+if [ "$oldmd5" != "$newmd5" ]; then
+	service snmpd restart
+	echo
+fi
