@@ -55,4 +55,6 @@ fi
 if [ "$oldmd5" != "$newmd5" ]; then
 	service snmpd restart
 	echo
+else
+	echo "skipping snmpd restart, configuration has not changed"
 fi
