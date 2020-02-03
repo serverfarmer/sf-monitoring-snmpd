@@ -1,6 +1,5 @@
-#!/bin/bash
+#!/bin/sh
 . /opt/farm/scripts/init
-. /opt/farm/scripts/functions.custom
 . /opt/farm/scripts/functions.install
 
 
@@ -40,11 +39,12 @@ save_original_config $config
 if [ -s $file.range ]; then
 	range=`cat $file.range`
 else
-	range=`management_public_ip_range`
+	range=`/opt/farm/config/get-management-public-ip-range.sh`
 fi
 
 community="`cat $file.community`"
-cat $base/snmpd.tpl |sed -e "s#%%community%%#$community#g" -e "s#%%domain%%#`external_domain`#g" -e "s#%%management%%#$range#g" >$config
+domain=`/opt/farm/config/get-external-domain.sh`
+cat $base/snmpd.tpl |sed -e "s#%%community%%#$community#g" -e "s#%%domain%%#$domain#g" -e "s#%%management%%#$range#g" >$config
 newmd5=`md5sum $config`
 
 if [ -f $base/snmpd.default ]; then
